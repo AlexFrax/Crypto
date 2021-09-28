@@ -1,1 +1,1 @@
-See https://www.buymeacoffee.com/nobbiscrypto for more info
+See https://dev.to/nobbi for more info
