@@ -105,16 +105,14 @@ for deal in deals:
         if int(deal_current_so) >= 4:
             if check_deal_id(str(deal_id),file_path) == False:
                 DiscordText = DiscordText + str(deal_id) + ', ' + str(deal_name) + ', ' + str(deal_current_so) + '\n'
-            
-                if adjust_TP == True:
-                    if deal_current_so == 5:
-                        AdjustTP(deal_id,TPSO5)
-                    if deal_current_so == 6:
-                        AdjustTP(deal_id,TPSO6)
-                    if deal_current_so == 7:
-                        AdjustTP(deal_id, TPSO7)
-                
                 store_deal_id(str(deal_id),file_path)
+            if adjust_TP == True:
+                if deal_current_so == 5:
+                    AdjustTP(deal_id,TPSO5)
+                if deal_current_so == 6:
+                    AdjustTP(deal_id,TPSO6)
+                if deal_current_so == 7:
+                    AdjustTP(deal_id, TPSO7)
 
 if DiscordText != "":
     SendToDiscord(DiscordText,DiscordWebhook)
