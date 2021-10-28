@@ -1,0 +1,19 @@
+# 3c
+TC_API_KEY = ''
+TC_API_SECRET = ''
+BOT_ID_5 = ''
+BOT_ID_10 = ''
+MODE = 'paper' # 'real' or 'paper'
+
+# Discord
+BINANCE_5_WEBHOOK = ''
+BINANCE_10_WEBHOOK = ''
+
+# Telegram
+TELEGRAM_API_ID = ''
+TELEGRAM_API_HASH = ''
+
+# Only include USDT pairs but exclude anything with "DOWN/" or "UP/" in the name aka Binance Leveraged Tokens.
+# Valid pair examples: ADA/USDT, LINK/USDT and so on
+# Non-valid pairs: ADADOWN/USDT, ADA/BUSD, LINK/ETH, LINK/BTC and so on
+PATTERN = '(?i)^(?!.*DOWN\/)(?!.*UP\/).*\/USDT.*'
