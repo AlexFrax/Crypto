@@ -60,11 +60,13 @@ client = TelegramClient('alerts', int(config.TELEGRAM_API_ID), config.TELEGRAM_A
 @client.on(events.NewMessage(chats='Hodloo Binance 10%',pattern=config.PATTERN))
 async def binance10_event_handler(event):
     url = config.BINANCE_10_WEBHOOK
+    SendToDiscord(event.raw_text, url)
     send_buy_trigger_10(event.raw_text)
 
 @client.on(events.NewMessage(chats='Hodloo Binance 5%',pattern=config.PATTERN))
 async def binance5_event_handler(event):
     url = config.BINANCE_5_WEBHOOK
+    SendToDiscord(event.raw_text, url)
     send_buy_trigger_5(event.raw_text)
 
 client.start()
