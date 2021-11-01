@@ -1,9 +1,1 @@
 websockets
-json
-traceback
-re
-asyncio
-decimal
-config
-requests
-datetime
