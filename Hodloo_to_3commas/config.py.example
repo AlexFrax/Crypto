@@ -1,0 +1,14 @@
+# 3c
+TC_API_KEY = ''
+TC_API_SECRET = ''
+BOT_ID_5 = '' # Bot to start deal for pair 5% under the base. Leave empty if not desired.
+BOT_ID_10 = '' # Bot to start deal for pair 10% under the base. Leave empty if not desired.
+BOT_ID_PANIC = '' # Bot to start a deal for a panic sell. Leave empty if not desired.
+MODE = 'paper' # 'real' or 'paper'
+
+# Discord
+DISCORD_NOTIFICATIONS = '' # Discord Webhook of channel for trade notifications. Leave empty if not desired.
+DISCORD_ERRORS = '' # Discord Webhook of channel for script errors. Mandatory.
+
+# Hodloo
+HODLOO_URI = '' # Hoodlo Websocket API. Request the info from Pete in the Hoodlo Discussions Telegram channel as it is private.
