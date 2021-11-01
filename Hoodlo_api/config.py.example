@@ -1,0 +1,10 @@
+# Discord
+DISCORD_WEBHOOK_5 = '' # Discord Webhook for alerts 5% under the base. Leavy empty if not desired.
+DISCORD_WEBHOOK_10 = '' # Discord Webhook for alerts 10% under the base. Leavy empty if not desired.
+DISCORD_PANIC = '' # Discord Webhook for panic sell alerts. Leave empty if not desired.
+DISCORD_ERRORS = '' # Discord Webhook for error. Mandatory.
+
+# Hodloo
+HODLOO_URI = '' # Hoodlo Websocket API. Request the info from Pete in the Hoodlo Discussions Telegram channel as it is private.
+HODLOO_QUOTES = ["USDT"]  # Multiple quotes -> ["USDT","USDC"]
+HODLOO_EXCHANGES = ["Binance"] # Multiple exchanges -> ["Binance","Kucoin"] Note that only Binance and Kucoin are fully supported at the moment.
