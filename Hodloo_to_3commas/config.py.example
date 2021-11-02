@@ -5,8 +5,8 @@ BOT_ID_5 = '' # Bot to start deal for pair 5% under the base. Leave empty if not
 BOT_ID_10 = '' # Bot to start deal for pair 10% under the base. Leave empty if not desired.
 BOT_ID_PANIC = '' # Bot to start a deal for a panic sell. Leave empty if not desired.
 MODE = 'paper' # 'real' or 'paper'
-TC_EXCLUDE_LEVERAGED_TOKENS = True
-TC_DENYLIST = ["USDN/USDT","USDC/USDT","USDJ/USDT"]
+TC_EXCLUDE_LEVERAGED_TOKENS = True # Set to false to trade leveraged tokens. Currently supports excluding Binance and Kucoin leveraged tokens.
+TC_DENYLIST = ["USDN/USDT","USDC/USDT","USDJ/USDT"] # Pairs on this list will not be traded.
 
 # Discord
 DISCORD_NOTIFICATIONS = '' # Discord Webhook of channel for trade notifications. Leave empty if not desired.
