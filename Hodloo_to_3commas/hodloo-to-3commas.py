@@ -47,7 +47,7 @@ def on_message(ws, message):
         pair = pair.replace('-','/')
         asset,quote = pair.split('/')
 
-        is_leveraged_token = test_leveraged_token(exchange_str, pair, asset) == False
+        is_leveraged_token = test_leveraged_token(exchange_str, pair, asset)
 
         if is_leveraged_token == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
             print(f"Leveraged tokens not desired but {pair} is one. Skipping...")
