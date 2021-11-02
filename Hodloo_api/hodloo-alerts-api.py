@@ -14,6 +14,7 @@ def send_to_discord(string,url):
     requests.post(url, json=data)
 
 def test_leveraged_token(exchange_str,pair,asset):
+	is_leveraged_token = False
 	if exchange_str == 'Kucoin':
 		is_leveraged_token = bool(re.search('3L', asset)) or bool(re.search('3S', asset))
 	if exchange_str == 'Binance':
