@@ -10,11 +10,12 @@ from py3cw.request import Py3CW
 import traceback
 
 def test_leveraged_token(exchange_str,pair,asset):
-	if exchange_str == 'Kucoin':
-		is_leveraged_token = bool(re.search('3L', asset)) or bool(re.search('3S', asset))
-	if exchange_str == 'Binance':
-		is_leveraged_token = bool(re.search('UP/', pair)) or bool(re.search('DOWN/', pair))
-	return is_leveraged_token
+    is_leveraged_token = False
+    if exchange_str == 'Kucoin':
+        is_leveraged_token = bool(re.search('3L', asset)) or bool(re.search('3S', asset))
+    if exchange_str == 'Binance':
+        is_leveraged_token = bool(re.search('UP/', pair)) or bool(re.search('DOWN/', pair))
+    return is_leveraged_token
 
 def send_to_discord(string,url):
     data = {"content": string}
@@ -47,9 +48,7 @@ def on_message(ws, message):
         pair = pair.replace('-','/')
         asset,quote = pair.split('/')
 
-        is_leveraged_token = test_leveraged_token(exchange_str, pair, asset)
-
-        if is_leveraged_token == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
+        if test_leveraged_token(exchange_str, pair, asset) == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
             print(f"Leveraged tokens not desired but {pair} is one. Skipping...")
         else:
             if pair in config.TC_DENYLIST:
