@@ -1,0 +1,4 @@
+*.code-workspace
+__pycache__
+config.py
+test.py
