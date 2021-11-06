@@ -1,0 +1,8 @@
+# 3c
+TC_API_KEY = ''
+TC_API_SECRET = ''
+TC_ACCOUNTS = ["123456","789012"]
+TC_MODE = 'real' # 'real' or 'paper'
+
+# Discord
+DISCORD_NOTIFICATIONS = '' # Discord Webhook of channel for notifications
