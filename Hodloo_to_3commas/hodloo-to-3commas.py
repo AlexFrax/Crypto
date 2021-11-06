@@ -8,6 +8,7 @@ import config
 from datetime import datetime
 from py3cw.request import Py3CW
 import traceback
+import sys
 
 def test_leveraged_token(exchange_str,pair,asset):
     is_leveraged_token = False
@@ -39,7 +40,6 @@ def send_buy_trigger(quote,asset,exchange_str,discord_message,bot_id):
 
 def on_message(ws, message):
     messages = json.loads(message)
-    now = datetime.now().replace(microsecond=0)
 
     # {"basePrice":0.0000011026,"belowBasePct":5,"marketInfo":{"price":0.000001047177966101695,"priceDate":1632045240,"ticker":"Kucoin:KAI-BTC"},"period":60,"type":"base-break"}
     # {"marketInfo":{"price":0.0000010517610169491524,"priceDate":1631879160,"ticker":"Kucoin:KAI-BTC"},"period":60,"strength":1.17,"type":"panic","velocity":-3.43}
@@ -49,10 +49,10 @@ def on_message(ws, message):
         asset,quote = pair.split('/')
 
         if test_leveraged_token(exchange_str, pair, asset) == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
-            print(f"Leveraged tokens not desired but {pair} is one. Skipping...")
+            print(f"{datetime.now().replace(microsecond=0)} - Leveraged tokens not desired but {pair} is one. Skipping...")
         else:
             if pair in config.TC_DENYLIST:
-                print(f"{pair} is on the denylist. Skipping...")
+                print(f"{datetime.now().replace(microsecond=0)} - {pair} is on the denylist. Skipping...")
             else:
                 alert_price = decimal.Decimal(str(messages["marketInfo"]["price"]))
                 tv_url = "https://www.tradingview.com/chart/?symbol=" + exchange_str + ":" + pair.replace('/','')
@@ -63,19 +63,19 @@ def on_message(ws, message):
                     base_price = decimal.Decimal(str(messages["basePrice"]))
                     
                     if messages["belowBasePct"] == 5 and bot_id_5 == True:
-                        print(f"Processing {pair} for Exchange {exchange_str} at {now}")
-                        discord_message = f'\n[ {now} | {exchange_str} | Base Break 5%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                        print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
+                        discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 5%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
                         send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_5)
                     if messages["belowBasePct"] == 10 and bot_id_10 == True:
-                        print(f"Processing {pair} for Exchange {exchange_str} at {now}")
-                        discord_message = f'\n[ {now} | {exchange_str} | Base Break 10%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                        print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
+                        discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 10%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
                         send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_10)
 
                 if messages['type'] == 'panic' and bot_id_panic == True:
-                    print(f"Processing {pair} for Exchange {exchange_str} at {now}")
+                    print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
                     strength = messages["strength"]
                     velocity = messages["velocity"]
-                    discord_message = f'\n[ {now} | {exchange_str} | Panic Trade ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                    discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Panic Trade ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
                     send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_PANIC)
             
 
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         if error_alerts == False:
             raise Exception("Variable DISCORD_ERRORS must be filled")
 
-        print('Connecting to 3Commas')
+        print(f"{datetime.now().replace(microsecond=0)} - Connecting to 3Commas")
         p3cw = Py3CW(
             key=config.TC_API_KEY,
             secret=config.TC_API_SECRET,
@@ -112,9 +112,10 @@ if __name__ == "__main__":
             }
         )
 
-        print("Waiting for events")
+        print(f"{datetime.now().replace(microsecond=0)} - Waiting for events")
         loop = asyncio.get_event_loop()
         loop.run_until_complete(consume(config.HODLOO_URI))
         loop.run_forever()
     except:
-        send_to_discord(f"Unexpected error: {traceback.format_exc()}",config.DISCORD_ERRORS)
+        send_to_discord(f"Unexpected error:\n```\n{traceback.format_exc()}\n```",config.DISCORD_ERRORS)
+        sys.exit(1)
