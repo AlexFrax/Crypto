@@ -7,6 +7,7 @@ import decimal
 import config
 import requests
 from datetime import datetime
+import sys
 
 
 def send_to_discord(string,url):
@@ -23,7 +24,6 @@ def test_leveraged_token(exchange_str,pair,asset):
 
 def on_message(ws, message):
 	messages = json.loads(message)
-	now = datetime.now().replace(microsecond=0)
 
 	# {"basePrice":0.0000011026,"belowBasePct":5,"marketInfo":{"price":0.000001047177966101695,"priceDate":1632045240,"ticker":"Kucoin:KAI-BTC"},"period":60,"type":"base-break"}
 	# {"marketInfo":{"price":0.0000010517610169491524,"priceDate":1631879160,"ticker":"Kucoin:KAI-BTC"},"period":60,"strength":1.17,"type":"panic","velocity":-3.43}
@@ -41,25 +41,25 @@ def on_message(ws, message):
 
 					if messages['type'] == 'base-break':
 						base_price = decimal.Decimal(str(messages["basePrice"]))
-						discord_message = f'\n[ {now} | {exchange_str} | Base Break ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+						discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
 						
 						if messages["belowBasePct"] == 5 and percent_5_alerts == True:
-							print(f"Processing {pair} for Exchange {exchange_str} at {now}")
+							print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
 							send_to_discord(discord_message,config.DISCORD_WEBHOOK_5)
 						if messages["belowBasePct"] == 10 and percent_10_alerts == True:
-							print(f"Processing {pair} for Exchange {exchange_str} at {now}")
+							print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
 							send_to_discord(discord_message,config.DISCORD_WEBHOOK_10)
 					
 					if messages['type'] == 'panic' and panic_alerts == True:
-						print(f"Processing {pair} for Exchange {exchange_str} at {now}")
+						print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
 						strength = messages["strength"]
 						velocity = messages["velocity"]
-						discord_message = f'\n[ {now} | {exchange_str} | Panic Alert ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+						discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Panic Alert ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
 						send_to_discord(discord_message,config.DISCORD_PANIC)
 				else:
-					print(f"{pair} is a leveraged token. Skipping it.")
+					print(f"{datetime.now().replace(microsecond=0)} - {pair} is a leveraged token. Skipping it.")
 			else:
-				print(f"Quote is {quote} hence skipping pair {pair}")
+				print(f"{datetime.now().replace(microsecond=0)} - Quote is {quote} hence skipping pair {pair}")
 
 
 async def consumer_handler(websocket) -> None:
@@ -80,9 +80,10 @@ if __name__ == "__main__":
 		if error_alerts == False:
 			raise Exception("Variable DISCORD_ERRORS must be filled")
 		
-		print("Waiting for events")
+		print(f"{datetime.now().replace(microsecond=0)} - Waiting for events")
 		loop = asyncio.get_event_loop()
 		loop.run_until_complete(consume(config.HODLOO_URI))
 		loop.run_forever()
 	except:
-		send_to_discord(f"Unexpected error: {traceback.format_exc()}",config.DISCORD_ERRORS)
+		send_to_discord(f"Unexpected error:\n```\n{traceback.format_exc()}\n```",config.DISCORD_ERRORS)
+		sys.exit(1)
