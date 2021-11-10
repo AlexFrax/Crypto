@@ -90,6 +90,12 @@ async def consume(uri) -> None:
 	async with websockets.connect(uri) as websocket:
 		await consumer_handler(websocket)
 
+def await_events():
+	print(f"{datetime.now().replace(microsecond=0)} - Waiting for events")
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(consume(config.HODLOO_URI))
+	loop.run_forever()
+
 if __name__ == "__main__":
     try:
         notification_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_NOTIFICATIONS))
@@ -113,10 +119,22 @@ if __name__ == "__main__":
             }
         )
 
-        print(f"{datetime.now().replace(microsecond=0)} - Waiting for events")
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(consume(config.HODLOO_URI))
-        loop.run_forever()
+        await_events()
+
+    except KeyboardInterrupt:
+        print(f"{datetime.now().replace(microsecond=0)} - Exiting as requested by user")
+
+    except websockets.ConnectionClosedError:
+        print(f"{datetime.now().replace(microsecond=0)} - Connection to websockets server lost. Reconnecting...")
+        await_events()
+
+    except TimeoutError:
+        print(f"{datetime.now().replace(microsecond=0)} - Got a timeout. Reconnecting...")
+        await_events()
+        
     except:
-        send_to_discord(f"Unexpected error:\n```\n{traceback.format_exc()}\n```",config.DISCORD_ERRORS)
-        sys.exit(1)
+        send_to_discord(f"{datetime.now().replace(microsecond=0)} - Unexpected error:\n```\n{traceback.format_exc()}\n```\nReconnecting...",config.DISCORD_ERRORS)
+        await_events()
+
+    finally:
+        print(f"{datetime.now().replace(microsecond=0)} - Exiting...")
