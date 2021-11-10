@@ -98,8 +98,8 @@ def await_events():
 
 if __name__ == "__main__":
     try:
-        notification_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_NOTIFICATIONS))
-        error_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_ERRORS))
+        notification_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_NOTIFICATIONS))
+        error_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_ERRORS))
         bot_id_5 = bool(config.BOT_ID_5)
         bot_id_10 = bool(config.BOT_ID_10)
         bot_id_panic = bool(config.BOT_ID_PANIC)

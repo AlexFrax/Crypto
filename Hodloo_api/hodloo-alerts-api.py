@@ -78,10 +78,10 @@ def await_events():
 
 if __name__ == "__main__":
 	try:
-		percent_5_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_WEBHOOK_5))
-		percent_10_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_WEBHOOK_10))
-		panic_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_PANIC))
-		error_alerts = bool(re.search('^https:\/\/discord\.com\/api\/webhooks', config.DISCORD_ERRORS))
+		percent_5_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_WEBHOOK_5))
+		percent_10_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_WEBHOOK_10))
+		panic_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_PANIC))
+		error_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_ERRORS))
 
 		if error_alerts == False:
 			raise Exception("Variable DISCORD_ERRORS must be filled")
