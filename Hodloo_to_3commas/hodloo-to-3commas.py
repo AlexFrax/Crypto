@@ -23,7 +23,7 @@ def send_to_discord(string,url):
     requests.post(url, json=data)
 
 def send_buy_trigger(quote,asset,exchange_str,discord_message,bot_id):
-    if exchange_str in ['Binance','Kucoin']:
+    if exchange_str in config.HODLOO_EXCHANGES:
         pair = quote + "_" + asset
         error, deal = p3cw.request(
             entity = 'bots',
