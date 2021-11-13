@@ -13,5 +13,5 @@ DISCORD_NOTIFICATIONS = '' # Discord Webhook of channel for trade notifications.
 DISCORD_ERRORS = '' # Discord Webhook of channel for script errors. Mandatory.
 
 # Hodloo
-HODLOO_URI = '' # Hodloo Websocket API. Request the info from Pete in the Hodloo Discussions Telegram channel as it is private.
+HODLOO_URI = 'wss://alpha2.hodloo.com/ws' # Hodloo Websocket API
 HODLOO_EXCHANGES = ["Binance"] # Multiple exchanges -> ["Binance","Kucoin"] Note that only Binance and Kucoin are fully supported at the moment.
