@@ -5,6 +5,6 @@ DISCORD_PANIC = '' # Discord Webhook for panic sell alerts. Leave empty if not d
 DISCORD_ERRORS = '' # Discord Webhook in case of errors. Mandatory.
 
 # Hodloo
-HODLOO_URI = '' # Hoodlo Websocket API. Request the info from Pete in the Hoodlo Discussions Telegram channel as it is private.
+HODLOO_URI = 'wss://alpha2.hodloo.com/ws' # Hoodlo Websocket API
 HODLOO_QUOTES = ["USDT"]  # Multiple quotes -> ["USDT","USDC"]
 HODLOO_EXCHANGES = ["Binance"] # Multiple exchanges -> ["Binance","Kucoin"] Note that only Binance and Kucoin are fully supported at the moment.
