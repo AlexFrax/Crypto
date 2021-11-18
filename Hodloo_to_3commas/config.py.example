@@ -15,3 +15,4 @@ DISCORD_ERRORS = '' # Discord Webhook of channel for script errors. Mandatory.
 # Hodloo
 HODLOO_URI = 'wss://alpha2.hodloo.com/ws' # Hodloo Websocket API
 HODLOO_EXCHANGES = ["Binance"] # Multiple exchanges -> ["Binance","Kucoin"] Note that only Binance and Kucoin are fully supported at the moment.
+HODLOO_MIN_VOLUME = '' # No alert will be fired if the volume for the last 24h is below this threshold. Dot notation required. Example: '2951364607.0' Leave empty if not desired.

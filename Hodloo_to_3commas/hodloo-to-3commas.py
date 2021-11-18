@@ -36,48 +36,64 @@ def send_buy_trigger(quote,asset,exchange_str,discord_message,bot_id):
         if not error and notification_alerts == True:
             send_to_discord(discord_message,config.DISCORD_NOTIFICATIONS)
     
-    
+def test_volume24(volume_hodloo,volume_threshold):
+	if volume_threshold == '':
+		# Volume filter not desired -> proceeed
+		return True
+	else:
+		if bool(re.search('^\d+(\.\d+)$',volume_threshold)) == True:
+			if volume_hodloo < float(volume_threshold):
+				# Volume filter is set and volume below threshold -> stop
+				return False
+			else:
+				# Volmue filter is set and volume above threshold -> proceed
+				return True
+		else:
+			raise Exception("Variable HODLOO_MIN_VOLUME not set correctly. Please read the variable documentation.")    
 
 def on_message(ws, message):
     messages = json.loads(message)
 
-    # {"basePrice":0.0000011026,"belowBasePct":5,"marketInfo":{"price":0.000001047177966101695,"priceDate":1632045240,"ticker":"Kucoin:KAI-BTC"},"period":60,"type":"base-break"}
-    # {"marketInfo":{"price":0.0000010517610169491524,"priceDate":1631879160,"ticker":"Kucoin:KAI-BTC"},"period":60,"strength":1.17,"type":"panic","velocity":-3.43}
+    # {"basePrice":0.0000014002,"belowBasePct":0,"marketInfo":{"pctRelBase":-4.04,"price":0.0000013597,"priceDate":1637223011,"symbol":"manbtc","ticker":"Huobi:MAN-BTC","volume24":5.74040067182},"period":60,"type":"base-break"}
+	# {"marketInfo":{"price":0.002621,"priceDate":1637222839,"symbol":"BSVBTC","ticker":"HitBTC:BSV-BTC","volume24":28.209960342},"period":60,"strength":7.7,"type":"panic","velocity":-2.27}
     if messages['type'] in ['base-break','panic']:
         exchange_str,pair = messages["marketInfo"]["ticker"].split(':')
         if exchange_str in config.HODLOO_EXCHANGES:
             pair = pair.replace('-','/')
             asset,quote = pair.split('/')
-
-            if test_leveraged_token(exchange_str, pair, asset) == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
-                print(f"{datetime.now().replace(microsecond=0)} - Leveraged tokens not desired but {pair} is one. Skipping...")
-            else:
-                if pair in config.TC_DENYLIST:
-                    print(f"{datetime.now().replace(microsecond=0)} - {pair} is on the denylist. Skipping...")
+            volume24 = messages["marketInfo"]["volume24"]
+            if test_volume24(volume24,config.HODLOO_MIN_VOLUME) == True:
+                if test_leveraged_token(exchange_str, pair, asset) == True and config.TC_EXCLUDE_LEVERAGED_TOKENS == True:
+                    print(f"{datetime.now().replace(microsecond=0)} - Leveraged tokens not desired but {pair} is one. Skipping...")
                 else:
-                    alert_price = decimal.Decimal(str(messages["marketInfo"]["price"]))
-                    tv_url = "https://www.tradingview.com/chart/?symbol=" + exchange_str + ":" + pair.replace('/','')
-                    hodloo_url = (config.HODLOO_URI).replace('wss:','https:').replace('/ws','/#/')
-                    hodloo_url = hodloo_url + exchange_str + ":" + pair.replace('/','-')
+                    if pair in config.TC_DENYLIST:
+                        print(f"{datetime.now().replace(microsecond=0)} - {pair} is on the denylist. Skipping...")
+                    else:
+                        alert_price = decimal.Decimal(str(messages["marketInfo"]["price"]))
+                        tv_url = "https://www.tradingview.com/chart/?symbol=" + exchange_str + ":" + pair.replace('/','')
+                        hodloo_url = (config.HODLOO_URI).replace('wss:','https:').replace('/ws','/#/')
+                        hodloo_url = hodloo_url + exchange_str + ":" + pair.replace('/','-')
 
-                    if messages['type'] == 'base-break':
-                        base_price = decimal.Decimal(str(messages["basePrice"]))
-                        
-                        if messages["belowBasePct"] == 5 and bot_id_5 == True:
-                            print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
-                            discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 5%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
-                            send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_5)
-                        if messages["belowBasePct"] == 10 and bot_id_10 == True:
-                            print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
-                            discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 10%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
-                            send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_10)
+                        if messages['type'] == 'base-break':
+                            base_price = decimal.Decimal(str(messages["basePrice"]))
+                            
+                            if messages["belowBasePct"] == 5 and bot_id_5 == True:
+                                print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
+                                discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 5%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                                send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_5)
+                            if messages["belowBasePct"] == 10 and bot_id_10 == True:
+                                print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
+                                discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Base Break 10%]\n\nSymbol: *{pair}*\nAlert Price: {alert_price} - Base Price: {base_price}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                                send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_10)
 
-                    if messages['type'] == 'panic' and bot_id_panic == True:
-                        print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
-                        strength = messages["strength"]
-                        velocity = messages["velocity"]
-                        discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Panic Trade ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
-                        send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_PANIC)
+                        if messages['type'] == 'panic' and bot_id_panic == True:
+                            print(f"{datetime.now().replace(microsecond=0)} - Processing {pair} for Exchange {exchange_str}")
+                            strength = messages["strength"]
+                            velocity = messages["velocity"]
+                            discord_message = f'\n[ {datetime.now().replace(microsecond=0)} | {exchange_str} | Panic Trade ]\n\nSymbol: *{pair}*\nAlert Price: {alert_price}\nVelocity: {velocity}\nStrength: {strength}\n[TradingView]({tv_url}) - [Hodloo]({hodloo_url})'
+                            send_buy_trigger(quote,asset,exchange_str,discord_message,config.BOT_ID_PANIC)
+            else:
+                    print(f"{datetime.now().replace(microsecond=0)} - Volume is below threshold hence skipping pair {pair}")
             
 
 
