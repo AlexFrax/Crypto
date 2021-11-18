@@ -4,9 +4,10 @@ import traceback
 import re
 import asyncio
 import decimal
-import config
+import sys
 import requests
 from datetime import datetime
+import importlib
 
 
 def send_to_discord(string,url):
@@ -95,6 +96,19 @@ def await_events():
 	loop.run_forever()
 
 if __name__ == "__main__":
+
+	if len(sys.argv) == 1:
+		print(f"{datetime.now().replace(microsecond=0)} - No parameters passed to script. Importing config.py as source of variables.")
+		import config
+	elif len(sys.argv) == 2:
+		dummy = sys.argv[1]
+		if dummy[-3:] == '.py':
+			dummy = dummy[:-3]
+		print(f"{datetime.now().replace(microsecond=0)} - One parameter passed to script. Importing {dummy}.py as source of variables.")
+		config = importlib.import_module(dummy)
+	else:
+		raise Exception("Unsupported amount of parameters. Use either zero or one.")
+
 	try:
 		percent_5_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_WEBHOOK_5))
 		percent_10_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_WEBHOOK_10))

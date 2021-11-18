@@ -4,7 +4,7 @@ import asyncio
 import requests
 import re
 import decimal
-import config
+import importlib
 from datetime import datetime
 from py3cw.request import Py3CW
 import traceback
@@ -114,6 +114,17 @@ def await_events():
 
 if __name__ == "__main__":
     try:
+        if len(sys.argv) == 1:
+            print(f"{datetime.now().replace(microsecond=0)} - No parameters passed to script. Importing config.py as source of variables.")
+            import config
+        elif len(sys.argv) == 2:
+            dummy = sys.argv[1]
+            if dummy[-3:] == '.py':
+                dummy = dummy[:-3]
+            print(f"{datetime.now().replace(microsecond=0)} - One parameter passed to script. Importing {dummy}.py as source of variables.")
+            config = importlib.import_module(dummy)
+        else:
+            raise Exception("Unsupported amount of parameters. Use either zero or one.")
         notification_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_NOTIFICATIONS))
         error_alerts = bool(re.search('^https:\/\/(discord|discordapp)\.com\/api\/webhooks', config.DISCORD_ERRORS))
         bot_id_5 = bool(config.BOT_ID_5)
