@@ -8,9 +8,10 @@ $DiscordWebhook = ''
 # Get URLs from edgesforledges.com or sandwich.finance and put them below. If you need more than what is provided here, copy a row and edit accordingly.
 # Download the list initially. The script does not do this for you, they have to exist already in the same folder as the script.
 $Inputs = @(
-    [PSCustomObject]@{URL = "http://edgesforledges.com/watchlists/download/binance/fiat/usdt/all";  List = "$(Join-Path $PSScriptRoot binance-fiat-usdt.txt)"}
-    [PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/binancefuturesf_usdt_perpetual_futures.txt";  List = "$(Join-Path $PSScriptRoot binance-futures-usd-m.txt)"}
-    [PSCustomObject]@{URL = "http://edgesforledges.com/watchlists/download/binance/fiat/eur/all";  List = "$(Join-Path $PSScriptRoot binance-fiat-eur.txt)"}
+	[PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/ftx_perpetual_futures.txt"; List = "$(Join-Path $PSScriptRoot ftx_perpetual_futures.txt)"}
+    [PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/ftx_spot_markets.txt"; List = "$(Join-Path $PSScriptRoot ftx_spot_markets.txt)"}
+    [PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/kucoin_usdt_markets.txt"; List = "$(Join-Path $PSScriptRoot kucoin_usdt_markets.txt)"}
+	[PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/binance_usdt_markets.txt"; List = "$(Join-Path $PSScriptRoot binance_usdt_markets.txt.txt)"}
 )
 
 ###
