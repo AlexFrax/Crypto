@@ -18,9 +18,23 @@ $Inputs = @(
 ### Main script. Do not change!
 ###
 
+$Windows = $false
+
+If ([System.Environment]::OSVersion.Platform -eq "Win32NT")
+{
+    $Windows = $True
+}
+
 Foreach ($Input in $Inputs)
 {
-    $ListName = $Input.List.split('\\').split('.')[-2]
+    If ($Windows -eq $true)
+    {
+        $ListName = $Input.List.split('\\').split('.')[-2]
+    }
+    else {
+        $ListName = $Input.List.split('/').split('.')[-2]
+    }
+    
 
     If (-not (Test-Path $Input.List))
     {
