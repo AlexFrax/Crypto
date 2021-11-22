@@ -11,7 +11,7 @@ $Inputs = @(
 	[PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/ftx_perpetual_futures.txt"; List = "$(Join-Path $PSScriptRoot ftx_perpetual_futures.txt)"}
     [PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/ftx_spot_markets.txt"; List = "$(Join-Path $PSScriptRoot ftx_spot_markets.txt)"}
     [PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/kucoin_usdt_markets.txt"; List = "$(Join-Path $PSScriptRoot kucoin_usdt_markets.txt)"}
-	[PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/binance_usdt_markets.txt"; List = "$(Join-Path $PSScriptRoot binance_usdt_markets.txt.txt)"}
+	[PSCustomObject]@{URL = "https://sandwichfinance.blob.core.windows.net/files/binance_usdt_markets.txt"; List = "$(Join-Path $PSScriptRoot binance_usdt_markets.txt)"}
 )
 
 ###
