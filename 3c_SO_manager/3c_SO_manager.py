@@ -14,6 +14,7 @@ from py3cw.request import Py3CW
 API_Key = ''
 API_Secret = ''
 account_id = ''
+bot_id = ''
 
 # Discord webhook for notifications
 DiscordWebhook = ''
@@ -78,15 +79,26 @@ p3cw = Py3CW(
         'retry_status_codes': [502]
     }
 )
-    
-error, deals = p3cw.request(
-    entity='deals',
-    action='',
-    payload = {
-        "scope": "active",
-        "account_id": account_id
-    }
-)
+
+if bot_id == '':
+    error, deals = p3cw.request(
+        entity='deals',
+        action='',
+        payload = {
+            "scope": "active",
+            "account_id": account_id
+        }
+    )
+else:
+    error, deals = p3cw.request(
+        entity='deals',
+        action='',
+        payload = {
+            "scope": "active",
+            "account_id": account_id,
+            "bot_id": bot_id
+        }
+    )
 
 # Create id storage file if it does not exist
 dir_path = os.path.dirname(os.path.realpath(__file__))
