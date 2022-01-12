@@ -1,6 +1,6 @@
 # 3c
-TC_API_KEY = ''
-TC_API_SECRET = ''
+TC_API_KEY = '126516'
+TC_API_SECRET = '6546ads4f854'
 BOT_ID_5 = '' # Bot to start deal for pair 5% under the base. Leave empty if not desired.
 BOT_ID_10 = '' # Bot to start deal for pair 10% under the base. Leave empty if not desired.
 BOT_ID_PANIC = '' # Bot to start a deal for a panic sell. Leave empty if not desired.
